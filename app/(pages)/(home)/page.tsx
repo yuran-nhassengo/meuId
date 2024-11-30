@@ -3,13 +3,13 @@ import HomeInf from "@/components/Home";
 import Introducao from "@/components/Home/intro";
 
 
-const Home = () =>{
+const Home = () => {
     return (
         <><div>
             <Header/>
 
 
-            
+
             {/* teu codigo daqui pra baixo*/}
             <div>
                 <Introducao/>
