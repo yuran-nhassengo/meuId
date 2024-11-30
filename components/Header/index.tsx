@@ -7,7 +7,7 @@ export const Header = () => {
     const pathname = usePathname();  
 
     return (
-        <div className="bg-transparent w-full py-3">
+        <div className="bg-transparent w-full py-1">
             <div className="max-w-7xl mx-auto md:px-4 px-1">
                 <div className=" rounded-md flex justify-between items-center px-6 py-3 space-x-4">
                     <h1 className="text-xl font-semibold">Meu ID</h1>
