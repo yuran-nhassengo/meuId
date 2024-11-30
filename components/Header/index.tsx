@@ -1,6 +1,6 @@
 export const Header = () => {
     return(
-        <div className="bg-black w-full py-3">
+        <div className="bg-stone-200 w-full py-3">
         <h1> testando Header</h1>
         <nav>
             <ul>
