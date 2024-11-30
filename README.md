@@ -1,36 +1,20 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+Sistema de Documentos Perdidos e Encontrados
+Este projeto é uma aplicação web desenvolvida com Next.js que tem como objetivo ajudar pessoas a encontrar documentos perdidos e permitir que outros publiquem documentos encontrados. A plataforma facilita a interação entre usuários, permitindo que publiquem e busquem documentos como passaportes, carteiras, RGs, entre outros, de forma simples e eficiente.
 
-## Getting Started
+Funcionalidades
+Publicação de Documentos Encontrados: Usuários podem registrar documentos encontrados, incluindo informações como tipo, descrição, localização e foto do documento.
 
-First, run the development server:
+Busca de Documentos Perdidos: Permite aos usuários procurar documentos perdidos utilizando filtros por tipo, localização e data.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Autenticação de Usuários: Utiliza NextAuth.js para autenticação, permitindo que os usuários se registrem e façam login para gerenciar seus documentos.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Notificações por E-mail: Quando um documento perdido é encontrado, o sistema notifica o usuário por e-mail.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Perfil de Usuário: Cada usuário tem um perfil onde pode visualizar e gerenciar os documentos que publicou ou procurou.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Tecnologias Utilizadas
+Next.js: Framework React para o desenvolvimento do frontend e backend.
+Prisma: ORM para manipulação do banco de dados (PostgreSQL ou MySQL).
+NextAuth.js: Autenticação de usuários com integração ao banco de dados.
+SendGrid: Serviço para envio de e-mails (notificações).
+AWS S3/Cloudinary: Armazenamento de imagens dos documentos encontrados.
