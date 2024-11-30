@@ -16,16 +16,16 @@ export const Header = () => {
                         <Link
                             href="/"
                             className={`px-4 py-2 rounded-xl ${
-                                pathname === '/' ? 'bg-blue-500 hover:bg-blue-500 text-white ' : 'dark:hover:bg-gray-600'
-                            } hover:bg-gray-100 hover:px-6 transition-all duration-300 ease-in-out `}
+                                pathname === '/' ? 'bg-blue-500 hover:bg-blue-500 text-white ' : 'dark:hover:bg-gray-600 hover:bg-gray-100'
+                            }  hover:px-6 transition-all duration-300 ease-in-out `}
                         >
                             Home
                         </Link>
                         <Link
                             href="/perfil"
                             className={`px-4 py-2 rounded-xl  ${
-                                pathname === '/perfil' ? 'bg-blue-500 hover:bg-blue-500 text-white' : 'dark:hover:bg-gray-600 '
-                            } hover:bg-gray-100 hover:px-6 transition-all duration-300 ease-in-out `}
+                                pathname === '/perfil' ? 'bg-blue-500 hover:bg-blue-500 text-white' : 'dark:hover:bg-gray-600 hover:bg-gray-100'
+                            }  hover:px-6 transition-all duration-300 ease-in-out `}
                         >
                             Perfil
                         </Link>

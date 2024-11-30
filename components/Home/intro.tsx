@@ -1,11 +1,11 @@
 export default function Introducao() {
     return (
-      <section className="bg-gradient-to-br from-blue-50 via-white to-blue-100 py-12 px-6">
+      <section className=" py-12 px-6">
         <div className="max-w-5xl mx-auto text-center">
-          <h1 className="text-4xl font-extrabold text-gray-800 mb-4">
+          <h1 className="text-4xl font-extrabold  mb-4">
             Perdeu um documento? Encontrou algo importante?
           </h1>
-          <p className="text-lg text-gray-600 mb-6">
+          <p className="text-lg  mb-6">
             Nossa plataforma conecta quem perdeu com quem encontrou. Seja publicando ou buscando documentos, 
             estamos aqui para tornar esse processo mais rápido, seguro e eficiente. Junte-se a nós e faça parte 
             dessa comunidade de ajuda mútua!
