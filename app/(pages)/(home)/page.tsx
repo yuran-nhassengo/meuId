@@ -11,7 +11,7 @@ const Home = () => {
 
 
             {/* teu codigo daqui pra baixo*/}
-            <div>
+            <div className="mt-16">
                 <Introducao/>
                 <HomeInf/>
                 
