@@ -20,6 +20,8 @@ model DocumentosEncontrados {
   descricao     String
   localizacao   String
   usuarioId     String
+  whenCreate    DateTime   @default(now())
+  whenUpdate    DateTime   @default(now())
   usuario       Usuario    @relation(fields: [usuarioId], references: [id])
 }
 
@@ -31,6 +33,8 @@ model DocumentosPerdidos {
   descricao     String
   localizacao   String
   usuarioId     String
+  whenCreate    DateTime   @default(now())
+  whenUpdate    DateTime   @default(now())
   usuario       Usuario    @relation(fields: [usuarioId], references: [id])
 }
 
@@ -39,7 +43,8 @@ model Usuario {
   nome              String
   email             String                @unique
   senha             String
-  dataCriacao       DateTime             @default(now())
+  whenCreate    DateTime   @default(now())
+  whenUpdate    DateTime   @default(now())
   documentos        DocumentosEncontrados[]
   documentosPerdidos DocumentosPerdidos[]
 }

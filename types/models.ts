@@ -29,7 +29,6 @@ export interface DocumentosEncontrados {
     nome: string; // Nome do usuário
     email: string; // E-mail do usuário
     senha: string; // Senha do usuário (deve ser armazenada de forma segura, criptografada)
-    dataCriacao: Date; // Data de criação da conta do usuário
     documentos: DocumentosEncontrados[]; // Lista de documentos encontrados registrados pelo usuário
     documentosPerdidos: DocumentosPerdidos[]; // Lista de documentos perdidos registrados pelo usuário
   }
