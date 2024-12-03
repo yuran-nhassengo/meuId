@@ -49,7 +49,7 @@ const schemaStep1 = z.object({
 });
 
 const schemaStep2 = z.object({
-    celular: z.string().min(8, "Número de celular inválido"),
+    contcto: z.string().min(8, "Número de celular inválido"),
     email: z.string().email("Email inválido"),
     senha: z.string().min(6, "A senha deve ter pelo menos 6 caracteres"),
     confirmarSenha: z.string().min(6, "A confirmação de senha deve ter pelo menos 6 caracteres"),
@@ -65,7 +65,7 @@ const SignUp = () => {
         apelido: "",
         genero: "",
         dataNascimento: "",
-        celular: "",
+        contacto: "",
         email: "",
         senha: "",
         confirmarSenha: "",
@@ -80,11 +80,49 @@ const SignUp = () => {
         defaultValues: formData,
     });
 
-    const onSubmit = (data: any) => {
-        const newFormData = { ...formData, ...data };
+    const onSubmit = async (data: { nome: string; apelido: string; genero: string; dataNascimento: string; contacto: string; email: 
+        string; senha: string; confirmarSenha: string; }) => {
+            
+        const newFormData = { ...formData };
         setFormData(newFormData);
+
         if (step === 3) {
+
+            try{
+            const response = await fetch('/api/user',{
+                method:"POST",
+                headers:{
+                    "content-Type": "application/json"
+                },
+                body: JSON.stringify(newFormData),
+            });
+
+            if(!response.ok){
+                throw new Error("Erro ao cadastrar. Tente novamente mais tarde.");
+            }
+
+            const result = await response.json();
             alert("Cadastrado com sucesso!");
+
+            setFormData({
+                nome: "",
+                apelido: "",
+                genero: "",
+                dataNascimento: "",
+                contacto: "",
+                email: "",
+                senha: "",
+                confirmarSenha: "",
+            });
+
+            
+
+        } catch(error) {
+            console.error("Erro ao cadastrar:", error);
+
+            alert("Error ao cadastrar");
+
+            }
         } else {
             setStep(step + 1);
         } 
@@ -241,7 +279,7 @@ const SignUp = () => {
                                 <div className="mb-4 ">
                                     <label className="block text-lg font-semibold">Número de Celular</label>
                                     <Controller
-                                        name="celular"
+                                        name="contacto"
                                         control={control}
                                         render={({ field }) => (
                                             <PhoneInput
@@ -255,7 +293,7 @@ const SignUp = () => {
                                             />
                                         )}
                                     />
-                                    {errors.celular && <p className="text-red-500 text-sm">{errors.celular.message}</p>}
+                                    {errors.contacto && <p className="text-red-500 text-sm">{errors.contacto.message}</p>}
                                 </div>
 
 
@@ -305,7 +343,7 @@ const SignUp = () => {
                                 <p><strong>Gênero:</strong> {formData.genero}</p>
                                 <p><strong>Data de Nascimento:</strong> {formData.dataNascimento}</p>
                                 <p><strong>Email:</strong> {formData.email}</p>
-                                <p><strong>Celular:</strong> {formData.celular}</p>
+                                <p><strong>Celular:</strong> {formData.contacto}</p>
                             </div>
                         )}
 
