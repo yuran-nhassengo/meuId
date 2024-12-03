@@ -11,7 +11,6 @@ export const createDocumentoPE = async (
     tipoDocumento: string,
     localizacao: string,
     contacto: string,
-    status: string
 ) => {
 
     const documento = await prisma.documentosPerdidos.create({
@@ -21,7 +20,6 @@ export const createDocumentoPE = async (
             tipoDocumento,
             contacto,
             localizacao,
-            status
         },
     });
 
