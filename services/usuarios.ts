@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-
+import bcrypt from "bcrypt";
 
 const prisma = new PrismaClient();
 
@@ -8,11 +8,15 @@ export const createUser = async (
     email: string,
     senha: string,
 ) => {
+
+    const saltRounds = 10; // Número de rounds de hash
+    const hashedPassword = await bcrypt.hash(senha, saltRounds);
+    
     const User = await prisma.usuario.create({
         data: {
             nome,
             email,
-            senha
+            senha:hashedPassword
         },
     });
 
