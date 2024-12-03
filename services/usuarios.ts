@@ -5,6 +5,10 @@ const prisma = new PrismaClient();
 
 export const createUser = async (
     nome: string,
+    apelido: string,
+    genero: string,
+    dataNascimento: string,
+    contacto: string,
     email: string,
     senha: string,
 ) => {
@@ -15,6 +19,10 @@ export const createUser = async (
     const User = await prisma.usuario.create({
         data: {
             nome,
+            apelido,
+            genero,
+            dataNascimento,
+            contacto,
             email,
             senha:hashedPassword
         },
