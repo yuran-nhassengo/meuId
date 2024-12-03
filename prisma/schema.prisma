@@ -42,6 +42,10 @@ model DocumentosPerdidos {
 model Usuario {
   id                String                @id @default(cuid())
   nome              String
+  apelido           String
+  genero            String
+  dataNascimento    String
+  contacto          String              
   email             String                @unique
   senha             String
   whenCreate    DateTime   @default(now())

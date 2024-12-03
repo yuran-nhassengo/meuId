@@ -27,6 +27,10 @@ export interface DocumentosEncontrados {
   export interface Usuario {
     id: string; // Identificador único do usuário
     nome: string; // Nome do usuário
+    apelido: string;
+    genero:  string;
+    dataNascimento: string;
+    contacto:  string;
     email: string; // E-mail do usuário
     senha: string; // Senha do usuário (deve ser armazenada de forma segura, criptografada)
     documentos: DocumentosEncontrados[]; // Lista de documentos encontrados registrados pelo usuário
