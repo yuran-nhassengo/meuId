@@ -71,9 +71,18 @@ export const Header = () => {
                 Login
               </button>
             </Link>
+            <Link
+              href="/singup"
+              className={`rounded-2xl ${
+                pathname === '/login'
+                  ? 'bg-blue-500 text-white dark:hover:text-inherit hover:bg-blue-500'
+                  : 'dark:hover:bg-gray-700 hover:bg-gray-200'
+              } transition-all duration-50 ease-in-out`}
+            >
             <button className="px-4 py-2 border rounded-2xl bg-black text-white hover:bg-blue-600 dark:hover:bg-white/80 dark:bg-white dark:text-black hover:px-6 transition-all duration-300 ease-in-out">
               Inscrever-se
             </button>
+            </Link>
           </div>
         </div>
       </div>
