@@ -5,12 +5,14 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import PhoneInput from "react-phone-input-2";
-import "react-phone-input-2/lib/style.css"; 
+import "react-phone-input-2/lib/style.css";
 import MaskedInput from "react-text-mask";
+import { Modal } from "@/components/conta/modal";
+
 
 
 const currentYear = new Date().getFullYear();
-const currentMonth = new Date().getMonth() + 1;  
+const currentMonth = new Date().getMonth() + 1;
 const currentDay = new Date().getDate();
 
 const schemaStep1 = z.object({
@@ -23,23 +25,23 @@ const schemaStep1 = z.object({
         .min(1, "Data de nascimento é obrigatória")
         .refine((value) => {
             const [day, month, year] = value.split("/").map(Number);
-            const inputDate = new Date(year, month - 1, day); 
-            const currentDate = new Date(currentYear, currentMonth - 1, currentDay); 
+            const inputDate = new Date(year, month - 1, day);
+            const currentDate = new Date(currentYear, currentMonth - 1, currentDay);
             if (inputDate > currentDate) {
-                return false;  
+                return false;
             }
 
             if (month < 1 || month > 12) {
-                return false; 
+                return false;
             }
 
             if (day < 1 || day > 31) {
-                return false; 
+                return false;
             }
 
             const daysInMonth = new Date(year, month, 0).getDate();
             if (day > daysInMonth) {
-                return false;  
+                return false;
             }
 
             return true;
@@ -60,6 +62,7 @@ const schemaStep2 = z.object({
 
 const SignUp = () => {
     const [step, setStep] = useState(1);
+    const [isModalOpen, setModalOpen] = useState(false);
     const [formData, setFormData] = useState({
         nome: "",
         apelido: "",
@@ -124,9 +127,12 @@ const SignUp = () => {
             alert("Error ao cadastrar");
 
             }
+
+            setModalOpen(true); // Abre o modal
+
         } else {
             setStep(step + 1);
-        } 
+        }
     };
 
     const handleBack = () => {
@@ -144,7 +150,7 @@ const SignUp = () => {
                     <img
                         src="https://laisschulz.com/wp-content/uploads/2024/01/poses-para-fotos-femininas-image-24.jpg"
                         alt="Imagem Institucional"
-                        className="w-full h-full object-cover rounded-lg"
+                        className="w-full h-screen object-cover rounded-lg"
                     />
                 </div>
 
@@ -260,7 +266,7 @@ const SignUp = () => {
                         {/* Etapa 2 */}
                         {step === 2 && (
                             <>
-                              
+
                                 <div className="mb-4">
                                     <label className="block text-lg font-semibold">Email</label>
                                     <Controller
@@ -271,7 +277,7 @@ const SignUp = () => {
                                                 {...field}
                                                 type="email"
                                                 className="w-full p-2 text-black border border-gray-300 rounded-md"
-                                            placeholder="Digite Seu Email"
+                                                placeholder="Digite Seu Email"
                                             />
                                         )}
                                     />
@@ -289,8 +295,8 @@ const SignUp = () => {
                                                 enableSearch
                                                 containerClass="w-full text-black"
                                                 inputClass="w-full text-black p-2 border border-gray-300 rounded-md"
-                                            
-                                                
+
+
                                             />
                                         )}
                                     />
@@ -369,9 +375,17 @@ const SignUp = () => {
                     </form>
                 </div>
             </div>
+               {/* Modal */}
+               <Modal
+                isOpen={isModalOpen}
+                onClose={() => setModalOpen(false)}
+                title="Cadastro Enviado"
+                message="Parabéns! Seu cadastro foi concluído com sucesso. Aguarde a resposta da Direção"
+            />
         </div>
     );
 };
 
 export default SignUp;
+
 
