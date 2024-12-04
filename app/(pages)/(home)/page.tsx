@@ -12,10 +12,15 @@ const Home = () => {
 
 
             {/* teu codigo daqui pra baixo*/}
+<<<<<<< HEAD
             <div>
                 <div>
                     <Introducao/>
                  </div>
+=======
+            <div className="mt-16">
+                <Introducao/>
+>>>>>>> dev
                 <HomeInf/>
                 
                 

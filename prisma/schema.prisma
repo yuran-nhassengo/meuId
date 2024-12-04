@@ -1,0 +1,52 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+
+model DocumentosEncontrados {
+  id            String      @id @default(cuid())
+  nome          String
+  tipoDocumento String
+  contacto      String
+  linkImagem    String
+  descricao     String
+  localizacao   String
+  usuarioId     String
+  whenCreate    DateTime   @default(now())
+  whenUpdate    DateTime   @default(now())
+  usuario       Usuario    @relation(fields: [usuarioId], references: [id])
+}
+
+model DocumentosPerdidos {
+  id            String      @id @default(cuid())
+  nome          String
+  apelido       String
+  tipoDocumento String
+  contacto      String
+  localizacao   String
+  status        String  @default("pendente")
+  usuarioId     String?
+  whenCreate    DateTime   @default(now())
+  whenUpdate    DateTime   @default(now())
+  usuario       Usuario?    @relation(fields: [usuarioId], references: [id])
+}
+
+model Usuario {
+  id                String                @id @default(cuid())
+  nome              String
+  email             String                @unique
+  senha             String
+  whenCreate    DateTime   @default(now())
+  whenUpdate    DateTime   @default(now())
+  documentos        DocumentosEncontrados[]
+  documentosPerdidos DocumentosPerdidos[]
+}
+

@@ -4,7 +4,7 @@ const Perfil = () => {
     return(
         <div>
             <Header/>
-            <div>
+            <div className="mt-16">
             <h1>Testando Perfil</h1>
 
             </div>
