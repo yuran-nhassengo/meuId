@@ -1,15 +1,13 @@
-'use client'
+'use client';
 import Link from 'next/link';
 
 export default function Introducao() {
     return (
       <section className=" py-12 px-6">
-      <section className=" py-12 px-6">
         <div className="max-w-5xl mx-auto text-center">
           <h1 className="text-4xl font-extraboldmb-4">
             Perdeu um documento? Encontrou algo importante?
           </h1>
-          <p className="text-lg  mb-6">
           <p className="text-lg  mb-6">
             Nossa plataforma conecta quem perdeu com quem encontrou. Seja publicando ou buscando documentos, 
             estamos aqui para tornar esse processo mais rápido, seguro e eficiente. Junte-se a nós e faça parte 
