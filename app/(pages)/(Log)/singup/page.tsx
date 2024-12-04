@@ -80,13 +80,14 @@ const SignUp = () => {
         defaultValues: formData,
     });
 
-    const onSubmit = async (data: { nome: string; apelido: string; genero: string; dataNascimento: string; contacto: string; email: 
-        string; senha: string; confirmarSenha: string; }) => {
+    const onSubmit = async (data:any) => {
             
-        const newFormData = { ...formData };
+        const newFormData = { ...formData,...data };
         setFormData(newFormData);
 
         if (step === 3) {
+
+            console.log("3333333333")
 
             try{
             const response = await fetch('/api/user',{
