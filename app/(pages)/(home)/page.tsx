@@ -11,7 +11,7 @@ const Home = () => {
 
 
 
-            {/* teu codigo daqui pra baixo*/}
+            {/* teu codigo daqui pra baixo
 <<<<<<< HEAD
             <div>
                 <div>
@@ -25,7 +25,7 @@ const Home = () => {
                 
                 
 
-            </div>
+            </div>*/}
         </div>
         </>
         
