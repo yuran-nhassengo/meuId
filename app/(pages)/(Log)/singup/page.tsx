@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Header } from "@/components/Header";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -51,7 +51,7 @@ const schemaStep1 = z.object({
 });
 
 const schemaStep2 = z.object({
-    contcto: z.string().min(8, "Número de celular inválido"),
+    contacto: z.string().min(8, "Número de celular inválido"),
     email: z.string().email("Email inválido"),
     senha: z.string().min(6, "A senha deve ter pelo menos 6 caracteres"),
     confirmarSenha: z.string().min(6, "A confirmação de senha deve ter pelo menos 6 caracteres"),
@@ -59,6 +59,8 @@ const schemaStep2 = z.object({
     message: "As senhas não coincidem.",
     path: ["confirmarSenha"],
 });
+
+
 
 const SignUp = () => {
     const [step, setStep] = useState(1);
@@ -74,10 +76,15 @@ const SignUp = () => {
         confirmarSenha: "",
     });
 
+    useEffect(() => {
+        console.log("O valor de step foi alterado para:", step);
+    }, [step]); 
+
     const {
         control,
         handleSubmit,
         formState: { errors },
+        trigger,
     } = useForm({
         resolver: zodResolver(step === 1 ? schemaStep1 : schemaStep2),
         defaultValues: formData,
@@ -87,6 +94,8 @@ const SignUp = () => {
             
         const newFormData = { ...formData,...data };
         setFormData(newFormData);
+
+        console.log("Step antes de avançar:", step);
 
         if (step === 3) {
 
@@ -131,7 +140,14 @@ const SignUp = () => {
             setModalOpen(true); // Abre o modal
 
         } else {
-            setStep(step + 1);
+            const isValid = await trigger();  // Valida todos os campos da etapa atual
+
+            if (isValid) {
+                console.log("Validação bem-sucedida, avançando para o próximo step");
+                setStep(step + 1);  // Avança para o próximo step
+            } else {
+                console.log("Formulário inválido, não avançando para o próximo step");
+            }
         }
     };
 
@@ -387,5 +403,3 @@ const SignUp = () => {
 };
 
 export default SignUp;
-
-
