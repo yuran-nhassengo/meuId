@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken"; 
 
 const prisma = new PrismaClient();
 
@@ -31,6 +32,44 @@ export const createUser = async (
     return User;
 } ;
 
+
+export const login = async (email:string, senha:string) =>{
+
+    
+    
+    const user = await prisma.usuario.findUnique({
+        where:{email},
+    })
+
+    if(!user){
+            throw new Error("Usuário não encontrado");
+    }
+
+    const isPasswordValid = await bcrypt.compare(senha, user.senha);
+
+    if (!isPasswordValid) {
+        throw new Error("Senha incorreta");
+    }
+
+    const token = jwt.sign(
+        { userId: user.id, email: user.email },
+        process.env.JWT_SECRET as string, // Certifique-se de configurar uma chave secreta no .env
+        { expiresIn: "1h" } // O token vai expirar em 1 hora
+    );
+
+    return {
+        token,
+        user: {
+            id: user.id,
+            nome: user.nome,
+            apelido: user.apelido,
+            genero: user.genero,
+            dataNascimento: user.dataNascimento,
+            contacto: user.contacto,
+            email: user.email
+        }
+    };
+};  
 
 export const getAllUser = async () => {
     const users = await prisma.usuario.findMany();

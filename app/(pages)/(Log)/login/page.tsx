@@ -5,7 +5,7 @@ import { useState } from 'react';
 
 const FormLogin = () => {
   const steps = [
-    { label: 'Credenciais', fields: ['E-mail', 'Senha'] },
+    { label: 'Credenciais', fields: ['email', 'Senha'] },
   ];
 
   const [currentStep, setCurrentStep] = useState(0);
@@ -28,9 +28,40 @@ const FormLogin = () => {
 
   const progressPercentage = ((currentStep + 1) / steps.length) * 100;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Formulário de login enviado:', formData);
+
+    
+   
+    
+    const {email,senha} = formData;
+
+    console.log("Email enviado para o backend:", email);
+
+      try{
+
+        const response = await fetch('/api/user/login',{
+          method:"POST",
+          headers:{
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({email,senha}),
+        });
+        
+        const data = await response.json();
+
+        if (response.status === 200) {
+            console.log("Login bem-sucedido:", data.token);
+            // Armazenar o token no armazenamento local ou em cookies para autenticação
+        } else {
+            console.log("Erro de login:", data.error);
+        }
+      } catch(error){
+        console.error("Erro ao fazer Login:", error);
+
+        alert("Usuario ou senha invalida");
+      }
+
   };
 
   const handleProgressClick = (stepIndex: number) => {
