@@ -338,7 +338,7 @@ const SignUp = () => {
                 isOpen={isModalOpen}
                 onClose={() => setModalOpen(false)}
                 title="Cadastro Enviado"
-                message="Parabéns! Seu cadastro foi concluído com sucesso. Aguarde a resposta da Direção"
+                message="Parabéns! Seu cadastro foi concluído com sucesso."
             />
         </div>
     );
