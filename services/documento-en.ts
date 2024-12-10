@@ -25,7 +25,6 @@ export const createDocumentoEncontrado = async (
     tipoDocumento: string,
     localizacao: string,
     contacto: string,
-    DataEncontrada: string,
     status: string
 ) => {
 

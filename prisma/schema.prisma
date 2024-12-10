@@ -19,13 +19,12 @@ model DocumentosEncontrados {
   codigoDocumento String
   contacto      String
   linkImagem    String
-  descricao     String
-  localizacao   String
+  localizacao     String
   status        String?
-  usuarioId     String
+  usuarioId     String?
   whenCreate    DateTime   @default(now())
   whenUpdate    DateTime   @default(now())
-  usuario       Usuario    @relation(fields: [usuarioId], references: [id])
+  usuario       Usuario ?   @relation(fields: [usuarioId], references: [id])
 }
 
 model DocumentosPerdidos {
