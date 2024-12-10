@@ -14,11 +14,14 @@ datasource db {
 model DocumentosEncontrados {
   id            String      @id @default(cuid())
   nome          String
+  nomeDocumento String
   tipoDocumento String
+  codigoDocumento String
   contacto      String
   linkImagem    String
   descricao     String
   localizacao   String
+  status        String?
   usuarioId     String
   whenCreate    DateTime   @default(now())
   whenUpdate    DateTime   @default(now())

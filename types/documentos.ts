@@ -14,8 +14,8 @@ export interface documentosPe {
 
 export interface documentosEn {
     id: string,
-    nome:string, // nome de quem encontrou o documento
-    nomeDocumento: string, // Nome que aparece no documento encontrado
+    nomeDocumento:string, // nome do proprietario do documento
+    nome: string, // Nome de quem achou o documento
     codigoDocumento:string, // numero do documento encontrado
     Foto: string, // foto do documento
     tipoDocumento:string,
