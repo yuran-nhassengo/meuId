@@ -471,13 +471,13 @@ const navigateToStep = async (targetStep: number) => {
                 <strong>Localização:</strong> {formData.localizacao || "Não Confirmados"}
             </p>
             {formData.previewFoto && (
-                 <div className="relative w-full h-48  overflow-hidden transition-all duration-500 col-span-1 lg:col-span-2 mt-4">
+                 <div className="relative w-full h-48  overflow-hidden transition-all duration-500 col-span-1 lg:col-span-2 ">
                 <strong>Foto do Documento:</strong>
 
                  <img
                      src={formData.previewFoto}
                      alt="Pré-visualização do documento"
-                     className="w-full h-full bg-cover object-contain"
+                     className="w-full h-full bg-cover mt-1 object-contain"
                  />
                 </div>
             )}
