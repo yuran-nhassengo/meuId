@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { FaPlus, FaFileAlt, FaMapMarkerAlt, FaCalendarAlt, FaUser } from "react-icons/fa";
 import FormularioPublicacao from "./formulario";
+import Link from "next/link";
 
 interface Documento {
   id: number;
@@ -47,14 +48,16 @@ export default function HomeInf() {
             <option value="Bilhete de Identidade">Bilhete de Identidade</option>
           </select>
           {/* Botão para abrir o formulário */}
+          <Link href={"/form"}>
+         
         <div className="flex justify-center mb-3">
           <button
-            onClick={() => setShowForm(true)}
             className="px-6 py-6 text-lg shadow-md hover:bg-blue-700 transition-all text-black"
           >
-           Publicar Documento
+           Publicar Documento Encontrado
           </button>
         </div>
+        </Link>
         <div className="flex justify-center mb-3">
           <button
             className="px-6 py-6 text-lg shadow-md hover:bg-blue-700 transition-all text-black"

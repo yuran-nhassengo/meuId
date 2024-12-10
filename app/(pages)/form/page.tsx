@@ -45,7 +45,7 @@ const schemas = [
 ];
 
 
-const stepLabels = ["Documento", "Achador", "Localização", "Resumo"];
+const stepLabels = ["Documento", "Achador", "Detalhes", "Resumo"];
 
 const LostDocumentForm = () => {
     const [step, setStep] = useState(1);
@@ -145,13 +145,13 @@ const navigateToStep = async (targetStep: number) => {
             <div className="flex mt-20 px-1 md:px-6">
                 <div className="w-1/2 hidden md:block">
                     <img
-                        src="https://images.unsplash.com/photo-1589739902743-4e3d62a1814f"
+                        src="https://elatoda.com.br/wp-content/uploads/2020/03/sozinha-2-olook.jpg"
                         alt="Imagem Institucional"
                         className="w-full h-screen object-cover rounded-lg"
                     />
                 </div>
                 <div className="md:w-1/2 w-full px-3 sm:px-8">
-                    <h1 className="text-2xl md:text-3xl font-bold text-center mb-6">Formulário de Documentos Perdidos</h1>
+                    <h1 className="text-2xl md:text-3xl font-bold text-center mb-6">Formulário de Documentos Encontrados</h1>
 
                     {/* Barra de Progresso */}
                     <div className="mb-6">
@@ -254,7 +254,7 @@ const navigateToStep = async (targetStep: number) => {
         </div>
 
         <div>
-            <label className="block text-lg font-semibold">Data da Perda</label>
+            <label className="block text-lg font-semibold">Data Que Foi Encontrado</label>
             <Controller
                 name="dataPerda"
                 control={control}
