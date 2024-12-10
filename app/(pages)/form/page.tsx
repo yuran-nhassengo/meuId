@@ -8,6 +8,7 @@ import { Modal } from "@/components/conta/modal";
 import "react-phone-input-2/lib/style.css";
 import PhoneInput from "react-phone-input-2";
 import { ModalError } from "@/components/conta/modalerror";
+import { documentosEn } from "@/types/documentos";
 
 const schemaStep1 = z.object({
     nomeCompleto: z.string().min(2, "O nome completo é obrigatório."),
@@ -50,16 +51,16 @@ const stepLabels = ["Documento", "Achador", "Detalhes", "Resumo"];
 const LostDocumentForm = () => {
     const [step, setStep] = useState(1);
     const [isModalOpen, setModalOpen] = useState(false);
-    const [formData, setFormData] = useState({
-        nomeCompleto: "", 
+    const [formData, setFormData] = useState<documentosEn>({
+        nomeDocumento: "", 
         tipoDocumento: "",
-        numeroDocumento: "",
-        dataPerda: "",
-        fotoDocumento: null, 
-        previewFoto: "", 
-        nomeAchador: "",
-        contactoAchador: "",
+        codigoDocumento: "",
+        DataEncontrada: "",
+        Foto: "",  
+        nome: "",
+        contacto: "",
         localizacao: "",
+        status:"Pendente"
     });
     
     
@@ -79,21 +80,24 @@ const {
 });
 
     
-    
+
 
 const validateAllSteps = async () => {
     let isValid = true;
     for (let i = 0; i < schemas.length; i++) {
         const schema = schemas[i];
-        const data = Object.fromEntries(Object.entries(formData).filter(([key]) => schema.shape[key]));
+        const data = Object.fromEntries(
+            Object.entries(formData).filter(([key]) => key in schema.shape)
+        );
         try {
-            schema.parse(data);
+            schema.parse(data); // Valida o dado
         } catch (err) {
             isValid = false;
         }
     }
     return isValid;
 };
+
 
 const phoneInputRef = useRef(null); 
 const onSubmit = async (data: any) => {
@@ -192,20 +196,20 @@ const navigateToStep = async (targetStep: number) => {
         <div>
             <label className="block text-lg font-semibold">Nome Completo</label>
             <Controller
-    name="nomeCompleto"
+    name="nomeDocumento"
     control={control}
     render={({ field }) => (
         <input
             {...field}
             className={`w-full p-2 border ${
-                errors.nomeCompleto ? "border-red-500" : "border-gray-300"
+                errors.nomeDocumento ? "border-red-500" : "border-gray-300"
             } rounded-md text-black`}
             placeholder="Digite seu nome completo"
         />
     )}
 />
-{errors.nomeCompleto && (
-    <p className="text-red-500 text-sm">{errors.nomeCompleto.message}</p>
+{errors.nomeDocumento && (
+    <p className="text-red-500 text-sm">{errors.nomeDocumento.message}</p>
 )}
 
         </div>
@@ -238,7 +242,7 @@ const navigateToStep = async (targetStep: number) => {
         <div>
             <label className="block text-lg font-semibold">Número do Documento</label>
             <Controller
-                name="numeroDocumento"
+                name="codigoDocumento"
                 control={control}
                 render={({ field }) => (
                     <input
@@ -248,15 +252,15 @@ const navigateToStep = async (targetStep: number) => {
                     />
                 )}
             />
-            {errors.numeroDocumento && (
-                <p className="text-red-500 text-sm">{errors.numeroDocumento.message}</p>
+            {errors.codigoDocumento && (
+                <p className="text-red-500 text-sm">{errors.codigoDocumento.message}</p>
             )}
         </div>
 
         <div>
             <label className="block text-lg font-semibold">Data Que Foi Encontrado</label>
             <Controller
-                name="dataPerda"
+                name="DataEncontrada"
                 control={control}
                 render={({ field }) => (
                     <input
@@ -266,8 +270,8 @@ const navigateToStep = async (targetStep: number) => {
                     />
                 )}
             />
-            {errors.dataPerda && (
-                <p className="text-red-500 text-sm">{errors.dataPerda.message}</p>
+            {errors.DataEncontrada && (
+                <p className="text-red-500 text-sm">{errors.DataEncontrada.message}</p>
             )}
         </div>
     </>
@@ -284,7 +288,7 @@ const navigateToStep = async (targetStep: number) => {
                                 <div>
                                     <label className="block text-lg font-semibold">Nome do Achador</label>
                                     <Controller
-                                        name="nomeAchador"
+                                        name="nome"
                                         control={control}
                                         render={({ field }) => (
                                             <input
@@ -294,8 +298,8 @@ const navigateToStep = async (targetStep: number) => {
                                             />
                                         )}
                                     />
-                                    {errors.nomeAchador && (
-                                        <p className="text-red-500 text-sm">{errors.nomeAchador.message}</p>
+                                    {errors.nome && (
+                                        <p className="text-red-500 text-sm">{errors.nome.message}</p>
                                     )}
                                 </div>
 
@@ -307,7 +311,6 @@ const navigateToStep = async (targetStep: number) => {
                                         render={({ field }) => (
                                             <PhoneInput
                                             {...field}
-                                            ref={phoneInputRef} // Correct usage of ref
                                             country={"mz"}
                                             enableSearch
                                             containerClass="w-full text-black"
@@ -346,11 +349,11 @@ const navigateToStep = async (targetStep: number) => {
                                 <div>
     <label className="block text-lg font-semibold my-3">Foto do Documento</label>
     <Controller
-        name="fotoDocumento"
+        name="Foto"
         control={control}
         render={({ field }) => (
             <div>
-                {!formData.previewFoto ? (
+                {!formData.Foto ? (
                     /* Área de upload inicial */
                     <div className="relative w-full p-6 border border-gray-300 rounded-2xl  text-center hover:bg-gray-300  duration-500 cursor-pointer transition-all ">
                         <input
@@ -359,12 +362,11 @@ const navigateToStep = async (targetStep: number) => {
                             className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                             onChange={(e) => {
                                 const file = e.target.files?.[0];
+
+                                
                                 if (file) {
                                     field.onChange(file); // Atualiza o valor no react-hook-form
-                                    setFormData((prev) => ({
-                                        ...prev,
-                                        fotoDocumento: file,
-                                    }));
+                                    
 
                                     // Gera pré-visualização
                                     const reader = new FileReader();
@@ -401,7 +403,7 @@ const navigateToStep = async (targetStep: number) => {
                 ) : (
                     <div className="relative w-full h-60 rounded-2xl overflow-hidden transition-all bg-black dark:bg-gray-900 duration-500">
                         <img
-                            src={formData.previewFoto}
+                            src={formData.Foto}
                             alt="Pré-visualização do documento"
                             className="w-full h-full bg-cover object-contain"
                         />
@@ -410,8 +412,7 @@ const navigateToStep = async (targetStep: number) => {
                             onClick={() =>
                                 setFormData((prev) => ({
                                     ...prev,
-                                    previewFoto: "",
-                                    fotoDocumento: null,
+                                    Foto: "",
                                 }))
                             }
                             className="absolute top-2 right-2 bg-red-500 text-white text-xs font-bold px-2 py-2 rounded"
@@ -421,14 +422,14 @@ const navigateToStep = async (targetStep: number) => {
                     </div>
                 )}
 
-                {formData.fotoDocumento && (
+                {formData.Foto && (
                     <p className="text-sm text-green-600 mt-2">
-                        Arquivo selecionado: {formData.fotoDocumento.name}
+                        Arquivo selecionado: {formData.Foto}
                     </p>
                 )}
 
-                {errors.fotoDocumento && (
-                    <p className="text-red-500 text-sm mt-2">{errors.fotoDocumento.message}</p>
+                {errors.Foto && (
+                    <p className="text-red-500 text-sm mt-2">{errors.Foto.message}</p>
                 )}
             </div>
         )}
@@ -444,7 +445,7 @@ const navigateToStep = async (targetStep: number) => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-4 gap-y-2">
 
             <p>
-                <strong>Nome Completo:</strong> {formData.nomeCompleto || "Não Confirmados"}
+                <strong>Nome Completo:</strong> {formData.nomeDocumento || "Não Confirmados"}
             </p>
             <p>
                 <strong>Tipo de Documento:</strong> {formData.tipoDocumento || "Não Confirmados"}
@@ -452,15 +453,15 @@ const navigateToStep = async (targetStep: number) => {
 
             
             <p>
-                <strong>Número do Documento:</strong> {formData.numeroDocumento || "Não Confirmados"}
+                <strong>Número do Documento:</strong> {formData.codigoDocumento || "Não Confirmados"}
             </p>
             <p>
-                <strong>Data da Perda:</strong> {formData.dataPerda || "Não Confirmados"}
+                <strong>Data da Perda:</strong> {formData.DataEncontrada || "Não Confirmados"}
             </p>
 
 
             <p>
-                <strong>Nome do Achador:</strong> {formData.nomeAchador || "Não Confirmados"}
+                <strong>Nome do Achador:</strong> {formData.nome || "Não Confirmados"}
             </p>
             <p>
                 <strong>Contacto:</strong> {formData.contacto || "Não Confirmados"}
@@ -470,12 +471,12 @@ const navigateToStep = async (targetStep: number) => {
             <p>
                 <strong>Localização:</strong> {formData.localizacao || "Não Confirmados"}
             </p>
-            {formData.previewFoto && (
+            {formData.Foto && (
                  <div className="relative w-full h-48  overflow-hidden transition-all duration-500 col-span-1 lg:col-span-2 ">
                 <strong>Foto do Documento:</strong>
 
                  <img
-                     src={formData.previewFoto}
+                     src={formData.Foto}
                      alt="Pré-visualização do documento"
                      className="w-full h-full bg-cover mt-1 object-contain"
                  />
