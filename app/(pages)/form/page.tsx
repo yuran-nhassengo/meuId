@@ -100,10 +100,32 @@ const validateAllSteps = async () => {
 
 
 const phoneInputRef = useRef(null); 
+
 const onSubmit = async (data: any) => {
     const newFormData = { ...formData, ...data };
     setFormData(newFormData); 
 
+    const onSubmit = async (data: any) => {
+        const newFormData = { ...formData, ...data };
+        setFormData(newFormData); 
+    
+        if (step === stepLabels.length) {
+            const allValid = await validateAllSteps();
+            if (!allValid) {
+                setErrorMessage("Por favor, preencha todos os campos obrigatórios.");
+                return;
+            }
+            setErrorMessage("");
+            setModalOpen(true);
+        } else {
+            const isValid = await trigger();
+            if (isValid) {
+                setErrorMessage("");
+                setStep(step + 1);
+            }
+        }
+    };
+    
     if (step === stepLabels.length) {
         const allValid = await validateAllSteps();
         if (!allValid) {
@@ -112,6 +134,35 @@ const onSubmit = async (data: any) => {
         }
         setErrorMessage("");
         setModalOpen(true);
+
+        try{
+
+            const response = await fetch('/api/documentos-en',{
+                method:'POST',
+                headers:{
+                    "Content-Type":"application/json"
+                },
+                body:JSON.stringify(newFormData),
+            });
+
+            const data = response.json();
+
+            if (response.ok) {
+                // Sucesso: Dados enviados corretamente
+                console.log("Formulário enviado com sucesso:", data);
+                // Fazer o que for necessário após o sucesso (ex: mostrar uma mensagem de sucesso)
+            } else {
+                // Erro na requisição
+                console.error("Erro ao enviar o formulário:", data);
+                setErrorMessage("Erro ao enviar o formulário, tente novamente.");
+            }
+
+        }catch(error){
+            
+            console.error("Erro de rede ou de comunicação:", error);
+            setErrorMessage("Erro de rede. Por favor, tente novamente.");
+        }
+
     } else {
         const isValid = await trigger();
         if (isValid) {
