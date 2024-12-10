@@ -53,8 +53,8 @@ export const login = async (email:string, senha:string) =>{
 
     const token = jwt.sign(
         { userId: user.id, email: user.email },
-        process.env.JWT_SECRET as string, // Certifique-se de configurar uma chave secreta no .env
-        { expiresIn: "1h" } // O token vai expirar em 1 hora
+        process.env.JWT_SECRET as string, 
+        { expiresIn: "1h" } 
     );
 
     return {
