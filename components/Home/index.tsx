@@ -1,25 +1,43 @@
 'use client';
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaPlus, FaFileAlt, FaMapMarkerAlt, FaCalendarAlt, FaUser } from "react-icons/fa";
 import FormularioPublicacao from "./formulario";
 import Link from "next/link";
+import { DocumentosEncontrados } from "@prisma/client";
 
-interface Documento {
-  id: number;
-  tipoDocumento: string;
-  localEncontrado: string;
-  dataEncontrado: string;
-  fotoURL: string | null;
-  autor: string;
-}
+
 
 export default function HomeInf() {
-  const [publicacoes, setPublicacoes] = useState<Documento[]>([]);
+  const [publicacoes, setPublicacoes] = useState<DocumentosEncontrados[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [filtro, setFiltro] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false); // Estado de carregamento
+  const [error, setError] = useState<string | null>(null);
 
-  const handleNovaPublicacao = (documento: Documento) => {
+   // Função para buscar dados da API
+   const fetchPublicacoes = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch("/api/documentos-en"); // URL da API (substitua com a URL correta)
+      if (!response.ok) {
+        throw new Error("Erro ao carregar dados.");
+      }
+      const data: DocumentosEncontrados[] = await response.json();
+      setPublicacoes(data);
+    } catch (error: any) {
+      setError(error.message || "Erro desconhecido");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Chamada à API assim que o componente for montado
+  useEffect(() => {
+    fetchPublicacoes();
+  }, []);
+
+  const handleNovaPublicacao = (documento: DocumentosEncontrados) => {
     setPublicacoes((prev) => [documento, ...prev]);
     setShowForm(false); // Fecha o modal após publicação
   };
@@ -81,7 +99,7 @@ export default function HomeInf() {
                   ✕
                 </button>
               </div>
-              <FormularioPublicacao onPublicar={handleNovaPublicacao} />
+              {/* <FormularioPublicacao onPublicar={handleNovaPublicacao} /> */}
             </div>
           </div>
         )}
@@ -117,20 +135,20 @@ export default function HomeInf() {
                   </div>
                   <p className="text-gray-600 flex items-center mb-2">
                     <FaMapMarkerAlt className="text-indigo-400 mr-2" />
-                    <strong>Local:</strong> {doc.localEncontrado}
+                    <strong>Local:</strong> {doc.localizacao}
                   </p>
                   <p className="text-gray-600 flex items-center mb-2">
                     <FaCalendarAlt className="text-indigo-400 mr-2" />
-                    <strong>Data:</strong> {doc.dataEncontrado}
+                    <strong>Data:</strong> {2020}
                   </p>
                   <p className="text-gray-600 flex items-center mb-2">
                     <FaUser className="text-indigo-400 mr-2" />
-                    <strong>Autor:</strong> {doc.autor}
+                    <strong>Autor:</strong> {doc.nome}
                   </p>
-                  {doc.fotoURL && (
+                  {doc.linkImagem && (
                     <div className="mt-4">
                       <img
-                        src={doc.fotoURL}
+                        src={doc.linkImagem}
                         alt={doc.tipoDocumento}
                         className="w-full h-40 object-cover rounded-lg shadow-sm"
                       />
