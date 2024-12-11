@@ -1,5 +1,5 @@
 "use client"
-import React, { useState ,  useRef} from "react";
+import React, { useState ,  useRef, useEffect} from "react";
 import { Header } from "@/components/Header";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -11,17 +11,17 @@ import { ModalError } from "@/components/conta/modalerror";
 import { documentosEn } from "@/types/documentos";
 
 const schemaStep1 = z.object({
-    nomeCompleto: z.string().min(2, "O nome completo é obrigatório."),
+    nomeDocumento: z.string().min(2, "O nome completo é obrigatório."),
     tipoDocumento: z.enum(["BI", "Passaporte", "Carta de Condução", "Outro"], {
         errorMap: () => ({ message: "Selecione um tipo de documento válido." }),
     }),
-    numeroDocumento: z.string().nonempty("Número do documento é obrigatório."),
-    dataPerda: z.string().nonempty("Data da perda é obrigatória."),
+    codigoDocumento: z.string().nonempty("Número do documento é obrigatório."),
+    DataEncontrada: z.string().nonempty("Data da perda é obrigatória."),
 });
 
 
 const schemaStep2 = z.object({
-    nomeAchador: z.string().min(2, "O nome é obrigatório."),
+    nome: z.string().min(2, "O nome é obrigatório."),
     contacto: z.string()
         .min(8, "Número de celular inválido")
         .regex(
@@ -34,9 +34,7 @@ const schemaStep2 = z.object({
 
 const schemaStep3 = z.object({
     localizacao: z.string().min(5, "A localização é obrigatória."),
-    fotoDocumento: z.any().refine((file) => file instanceof File, {
-        message: "A foto do documento é obrigatória.",
-    }),
+    Foto: z.string().optional(),
 });
 
 const schemas = [
@@ -50,6 +48,7 @@ const stepLabels = ["Documento", "Achador", "Detalhes", "Resumo"];
 
 const LostDocumentForm = () => {
     const [step, setStep] = useState(1);
+
     const [isModalOpen, setModalOpen] = useState(false);
     const [formData, setFormData] = useState<documentosEn>({
         nomeDocumento: "", 
@@ -62,6 +61,24 @@ const LostDocumentForm = () => {
         localizacao: "",
         status:"Pendente"
     });
+
+    const [previewFoto, setPreviewFoto] = useState<string | null>(null);
+
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            const previewUrl = URL.createObjectURL(file);
+            setPreviewFoto(previewUrl);
+            setFormData((prevData) => ({
+                ...prevData,
+                Foto: file.name,
+            }));
+        }
+    };
+
+    useEffect(() => {
+        console.log("O valor de step foi alterado para:", step);
+    }, [step]); 
     
     
 
@@ -84,54 +101,53 @@ const {
 
 const validateAllSteps = async () => {
     let isValid = true;
-    for (let i = 0; i < schemas.length; i++) {
+
+    // Valida os dados apenas das etapas preenchidas
+    for (let i = 0; i < step; i++) { // Ajusta para validar até o passo atual
+
+        if (i === 3) {
+            // Etapa 4: Ignora a validação e vai para o resumo
+            console.log("Etapa 4: Exibindo resumo sem validação.");
+            continue;  // Ignorar validação para a etapa 4
+        }
+
         const schema = schemas[i];
+        if (!schema || !schema.shape) {
+            
+            setErrorMessage(`Erro: A validação da etapa ${i + 1} não foi configurada corretamente.`);
+            setErrorModalOpen(true);  // Abrir modal de erro
+            console.error(`Schema inválido na etapa ${i + 1}:`, schema);
+            isValid = false;
+            break; 
+        }
         const data = Object.fromEntries(
             Object.entries(formData).filter(([key]) => key in schema.shape)
         );
+
         try {
-            schema.parse(data); // Valida o dado
+            schema.parse(data); // Valida os dados de cada etapa
         } catch (err) {
+            console.error(`Erro na validação da etapa ${i + 1}:`, err);
             isValid = false;
         }
     }
+
     return isValid;
 };
 
-
 const phoneInputRef = useRef(null); 
+
+const validateCurrentStep = async () => {
+    const isValid = await trigger();
+    return isValid;
+  };
 
 const onSubmit = async (data: any) => {
     const newFormData = { ...formData, ...data };
     setFormData(newFormData); 
-
-    const onSubmit = async (data: any) => {
-        const newFormData = { ...formData, ...data };
-        setFormData(newFormData); 
-    
-        if (step === stepLabels.length) {
-            const allValid = await validateAllSteps();
-            if (!allValid) {
-                setErrorMessage("Por favor, preencha todos os campos obrigatórios.");
-                return;
-            }
-            setErrorMessage("");
-            setModalOpen(true);
-        } else {
-            const isValid = await trigger();
-            if (isValid) {
-                setErrorMessage("");
-                setStep(step + 1);
-            }
-        }
-    };
     
     if (step === stepLabels.length) {
-        const allValid = await validateAllSteps();
-        if (!allValid) {
-            setErrorMessage("Por favor, preencha todos os campos obrigatórios.");
-            return;
-        }
+       
         setErrorMessage("");
         setModalOpen(true);
 
@@ -158,13 +174,13 @@ const onSubmit = async (data: any) => {
             }
 
         }catch(error){
-            
+
             console.error("Erro de rede ou de comunicação:", error);
             setErrorMessage("Erro de rede. Por favor, tente novamente.");
         }
 
     } else {
-        const isValid = await trigger();
+        const isValid = await validateCurrentStep();
         if (isValid) {
             setErrorMessage("");
             setStep(step + 1);
@@ -411,25 +427,7 @@ const navigateToStep = async (targetStep: number) => {
                             type="file"
                             accept="image/*"
                             className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                            onChange={(e) => {
-                                const file = e.target.files?.[0];
-
-                                
-                                if (file) {
-                                    field.onChange(file); // Atualiza o valor no react-hook-form
-                                    
-
-                                    // Gera pré-visualização
-                                    const reader = new FileReader();
-                                    reader.onloadend = () => {
-                                        setFormData((prev) => ({
-                                            ...prev,
-                                            previewFoto: reader.result as string,
-                                        }));
-                                    };
-                                    reader.readAsDataURL(file);
-                                }
-                            }}
+                            onChange={handleImageChange} 
                         />
                         <div className="flex flex-col items-center">
                             <svg
@@ -454,7 +452,7 @@ const navigateToStep = async (targetStep: number) => {
                 ) : (
                     <div className="relative w-full h-60 rounded-2xl overflow-hidden transition-all bg-black dark:bg-gray-900 duration-500">
                         <img
-                            src={formData.Foto}
+                            src={previewFoto || ""}
                             alt="Pré-visualização do documento"
                             className="w-full h-full bg-cover object-contain"
                         />
@@ -527,7 +525,7 @@ const navigateToStep = async (targetStep: number) => {
                 <strong>Foto do Documento:</strong>
 
                  <img
-                     src={formData.Foto}
+                     src={previewFoto || ""}
                      alt="Pré-visualização do documento"
                      className="w-full h-full bg-cover mt-1 object-contain"
                  />
