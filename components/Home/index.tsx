@@ -52,39 +52,32 @@ export default function HomeInf() {
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-indigo-400 via-white to-indigo-300 p-6">
-     <div className="bg-white w-2/3 h-auto flex justify-center max-w-6xl mx-auto">
-    {/* Dropdown de Filtro */}
-        <div className="flex justify-center mt-6 mb-3">
-         <select
-            value={filtro}
-            onChange={handleFiltroChange}
-            className="px-6 py-6 mb-3 text-lg shadow-md hover:bg-blue-700 transition-all text-black"
-          >
-            <option value="">Todos os Documentos</option>
-            <option value="Carta de Condução">Carta de Condução</option>
-            <option value="passaporte">Passaporte</option>
-            <option value="Bilhete de Identidade">Bilhete de Identidade</option>
-          </select>
-          {/* Botão para abrir o formulário */}
-          <Link href={"/form"}>
-         
-        <div className="flex justify-center mb-3">
-          <button
-            className="px-6 py-6 text-lg shadow-md hover:bg-blue-700 transition-all text-black"
-          >
-           Publicar Documento Encontrado
-          </button>
-        </div>
-        </Link>
-        <div className="flex justify-center mb-3">
-          <button
-            className="px-6 py-6 text-lg shadow-md hover:bg-blue-700 transition-all text-black"
-          >
-           Buscar Documento
-          </button>
-        </div>
-        </div>
-     </div>
+    <div className="bg-white w-full max-w-6xl h-auto flex flex-col items-center justify-center mx-auto p-4">
+  {/* Dropdown de Filtro */}
+  <div className="w-full flex flex-col items-center gap-4 mt-6">
+    <select
+      value={filtro}
+      onChange={handleFiltroChange}
+      className="w-full max-w-md px-4 py-2 text-lg shadow-md text-black hover:bg-blue-700 transition-all"
+    >
+      <option value="">Todos os Documentos</option>
+      <option value="Carta de Condução">Carta de Condução</option>
+      <option value="passaporte">Passaporte</option>
+      <option value="Bilhete de Identidade">Bilhete de Identidade</option>
+    </select>
+
+    {/* Botões */}
+    <Link href="/form" className="w-full max-w-md">
+      <button className="w-full px-4 py-2 text-lg shadow-md text-black hover:bg-blue-700 transition-all">
+        Publicar Documento Encontrado
+      </button>
+    </Link>
+    <button className="w-full max-w-md px-4 py-2 text-lg shadow-md text-black hover:bg-blue-700 transition-all">
+      Buscar Documento
+    </button>
+  </div>
+</div>
+
       <div className="max-w-6xl mx-auto">
         {/* Modal do formulário */}
         {showForm && (
