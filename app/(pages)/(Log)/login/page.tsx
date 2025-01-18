@@ -51,7 +51,7 @@ const FormLogin = () => {
         const data = await response.json();
 
         if (response.status === 200) {
-            console.log("Login bem-sucedido:", data.token);
+            console.log("Login bem-sucedido:", data.user);
             // Armazenar o token no armazenamento local ou em cookies para autenticação
         } else {
             console.log("Erro de login:", data.error);
