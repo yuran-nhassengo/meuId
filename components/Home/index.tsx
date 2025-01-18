@@ -52,7 +52,7 @@ export default function HomeInf() {
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-indigo-400 via-white to-indigo-300 p-6">
-    <div className="bg-white w-full max-w-6xl h-auto flex flex-col items-center justify-center mx-auto p-4">
+    <div className=" w-full max-w-6xl h-auto flex flex-col items-center justify-center mx-auto p-4">
   {/* Dropdown de Filtro */}
   <div className="w-full flex flex-col items-center gap-4 mt-6">
     <select
