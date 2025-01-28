@@ -36,7 +36,14 @@ export default function HomeInf() {
   useEffect(() => {
     fetchPublicacoes();
   }, []);
-
+  interface Documento {
+    id: number;
+    tipoDocumento: string;
+    localEncontrado: string;
+    dataEncontrado: string;
+    fotoURL: string | null;
+    autor: string;
+  }
   const handleNovaPublicacao = (documento: DocumentosEncontrados) => {
     setPublicacoes((prev) => [documento, ...prev]);
     setShowForm(false); // Fecha o modal após publicação
