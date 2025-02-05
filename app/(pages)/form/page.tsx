@@ -9,6 +9,15 @@ import "react-phone-input-2/lib/style.css";
 import PhoneInput from "react-phone-input-2";
 import { ModalError } from "@/components/conta/modalerror";
 import { documentosEn } from "@/types/documentos";
+import { CldUploadWidget} from 'next-cloudinary';
+
+interface CloudinaryUploadWidgetInfo {
+    info?: {
+      secure_url?: string;
+      [key: string]: any; // Outros campos podem ser adicionados conforme necessário
+    };
+  }
+  
 
 const schemaStep1 = z.object({
     nomeDocumento: z.string().min(2, "O nome completo é obrigatório."),
@@ -62,16 +71,16 @@ const LostDocumentForm = () => {
         status:"Pendente"
     });
 
-    const [previewFoto, setPreviewFoto] = useState<string | null>(null);
+    const [previewFoto, setPreviewFoto] = useState<File | null>(null);
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
             const previewUrl = URL.createObjectURL(file);
-            setPreviewFoto(previewUrl);
+            setPreviewFoto(file);
             setFormData((prevData) => ({
                 ...prevData,
-                Foto: file.name,
+                Foto: previewUrl,
             }));
         }
     };
@@ -142,11 +151,31 @@ const validateCurrentStep = async () => {
     return isValid;
   };
 
+  const handleStepDataUpdate = (data: any) => {
+    setFormData((prevData) => ({
+        ...prevData,
+        ...data,  // Acumula os dados da etapa atual com os dados anteriores
+    }));
+};
+
+useEffect(() => {
+    console.log("Imagem carregada com sucesso:", formData.Foto);
+}, [formData.Foto]);  // Só dispara quando formData.Foto mudar
+
+
+
 const onSubmit = async (data: any) => {
-    const newFormData = { ...formData, ...data };
-    setFormData(newFormData); 
+   
+
+    handleStepDataUpdate(data);
+
+    
+
+    console.log("Todos dados3......", formData.Foto);
     
     if (step === stepLabels.length) {
+
+        console.log("Todos dados4......",formData.Foto);
        
         setErrorMessage("");
         setModalOpen(true);
@@ -155,21 +184,18 @@ const onSubmit = async (data: any) => {
 
             const response = await fetch('/api/documentos-en',{
                 method:'POST',
-                headers:{
-                    "Content-Type":"application/json"
-                },
-                body:JSON.stringify(newFormData),
+                body:data,
             });
 
-            const data = response.json();
+            
 
             if (response.ok) {
-                // Sucesso: Dados enviados corretamente
-                console.log("Formulário enviado com sucesso:", data);
-                // Fazer o que for necessário após o sucesso (ex: mostrar uma mensagem de sucesso)
+                const responseData = await response.json();  // Analisa a resposta JSON
+                console.log("Formulário enviado com sucesso:", responseData);
             } else {
                 // Erro na requisição
-                console.error("Erro ao enviar o formulário:", data);
+                const errorData = await response.json();  // Obtém os dados de erro no formato JSON
+                console.error("Erro ao enviar o formulário:", errorData);
                 setErrorMessage("Erro ao enviar o formulário, tente novamente.");
             }
 
@@ -181,6 +207,7 @@ const onSubmit = async (data: any) => {
 
     } else {
         const isValid = await validateCurrentStep();
+        console.log("Dados Atuais....",data);
         if (isValid) {
             setErrorMessage("");
             setStep(step + 1);
@@ -251,107 +278,136 @@ const navigateToStep = async (targetStep: number) => {
 
                     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                     <ModalError
-    isOpen={errorModalOpen}
-    onClose={() => setErrorModalOpen(false)}
-    title="Erro"
-    message={errorMessage}  
-/>
+                        isOpen={errorModalOpen}
+                        onClose={() => setErrorModalOpen(false)}
+                        title="Erro"
+                        message={errorMessage}  
+                    />
 
                        {/* Etapa 1 */}
-{step === 1 && (
+                       {step === 1 && (
     <>
         <div>
             <label className="block text-lg font-semibold">Nome Completo</label>
-            <Controller
-    name="nomeDocumento"
-    control={control}
-    render={({ field }) => (
-        <input
-            {...field}
-            className={`w-full p-2 border ${
-                errors.nomeDocumento ? "border-red-500" : "border-gray-300"
-            } rounded-md text-black`}
-            placeholder="Digite seu nome completo"
-        />
-    )}
-/>
-{errors.nomeDocumento && (
-    <p className="text-red-500 text-sm">{errors.nomeDocumento.message}</p>
-)}
-
-        </div>
-
-        <div>
-            <label className="block text-lg font-semibold">Tipo de Documento</label>
-            <Controller
-                name="tipoDocumento"
+            
+                        <Controller
+                name="nomeDocumento"
                 control={control}
                 render={({ field }) => (
-                    <select
+                    <input
                         {...field}
-                        className="w-full p-2 border border-gray-300 rounded-md text-black"
+                        className={`w-full p-2 border ${
+                            errors.nomeDocumento ? "border-red-500" : "border-gray-300"
+                        } rounded-md text-black`}
+                        placeholder="Digite seu nome completo"
+                    />
+                )}
+            />
+        {errors.nomeDocumento && (
+            <p className="text-red-500 text-sm">{errors.nomeDocumento.message}</p>
+        )}
+
+                </div>
+
+                <div>
+                    <label className="block text-lg font-semibold">Tipo de Documento</label>
+                    <Controller
+                        name="tipoDocumento"
+                        control={control}
+                        render={({ field }) => (
+                            <select
+                                {...field}
+                                className="w-full p-2 border border-gray-300 rounded-md text-black"
+                            >
+                                <option value="" disabled>
+                                    Selecione
+                                </option>
+                                <option value="BI">BI</option>
+                                <option value="Passaporte">Passaporte</option>
+                                <option value="Carta de Condução">Carta de Condução</option>
+                                <option value="Outro">Outro</option>
+                            </select>
+                        )}
+                    />
+                    {errors.tipoDocumento && (
+                        <p className="text-red-500 text-sm">{errors.tipoDocumento.message}</p>
+                    )}
+                </div>
+
+                <div>
+                    <label className="block text-lg font-semibold">Número do Documento</label>
+                    <Controller
+                        name="codigoDocumento"
+                        control={control}
+                        render={({ field }) => (
+                            <input
+                                {...field}
+                                className="w-full p-2 border border-gray-300 rounded-md text-black"
+                                placeholder="Digite o número"
+                            />
+                        )}
+                    />
+                    {errors.codigoDocumento && (
+                        <p className="text-red-500 text-sm">{errors.codigoDocumento.message}</p>
+                    )}
+                </div>
+
+                <div>
+                    <label className="block text-lg font-semibold">Data Que Foi Encontrado</label>
+                    <Controller
+                        name="DataEncontrada"
+                        control={control}
+                        render={({ field }) => (
+                            <input
+                                {...field}
+                                type="date"
+                                className="w-full p-2 border border-gray-300 rounded-md text-black"
+                            />
+                        )}
+                    />
+                    {errors.DataEncontrada && (
+                        <p className="text-red-500 text-sm">{errors.DataEncontrada.message}</p>
+                    )}
+                </div>
+            </>
+        )}
+
+                    <CldUploadWidget
+                    uploadPreset="nextjs"
+                    onSuccess={(results) => {
+                        // Afirmação de tipo para garantir que results tem a estrutura correta
+                        const resultInfo = results as CloudinaryUploadWidgetInfo;
+
+                        // Verifica se info está presente
+                        if (resultInfo.info && resultInfo.info.secure_url) {
+                        const imageUrl = resultInfo.info.secure_url;
+                        console.log("Imagem carregada com sucesso:", imageUrl);
+
+
+                        // Atualiza o estado com a URL da imagem
+                        setFormData((prevData) => ({
+                            ...prevData,
+                            Foto: imageUrl,  // Armazena a URL da foto
+                        }));
+                        } else {
+                        console.error("Erro: A resposta do Cloudinary não contém a URL da imagem.");
+                        }
+                    }}
                     >
-                        <option value="" disabled>
-                            Selecione
-                        </option>
-                        <option value="BI">BI</option>
-                        <option value="Passaporte">Passaporte</option>
-                        <option value="Carta de Condução">Carta de Condução</option>
-                        <option value="Outro">Outro</option>
-                    </select>
-                )}
-            />
-            {errors.tipoDocumento && (
-                <p className="text-red-500 text-sm">{errors.tipoDocumento.message}</p>
-            )}
-        </div>
-
-        <div>
-            <label className="block text-lg font-semibold">Número do Documento</label>
-            <Controller
-                name="codigoDocumento"
-                control={control}
-                render={({ field }) => (
-                    <input
-                        {...field}
-                        className="w-full p-2 border border-gray-300 rounded-md text-black"
-                        placeholder="Digite o número"
-                    />
-                )}
-            />
-            {errors.codigoDocumento && (
-                <p className="text-red-500 text-sm">{errors.codigoDocumento.message}</p>
-            )}
-        </div>
-
-        <div>
-            <label className="block text-lg font-semibold">Data Que Foi Encontrado</label>
-            <Controller
-                name="DataEncontrada"
-                control={control}
-                render={({ field }) => (
-                    <input
-                        {...field}
-                        type="date"
-                        className="w-full p-2 border border-gray-300 rounded-md text-black"
-                    />
-                )}
-            />
-            {errors.DataEncontrada && (
-                <p className="text-red-500 text-sm">{errors.DataEncontrada.message}</p>
-            )}
-        </div>
-    </>
-)}
-
+                    {({ open }) => {
+                        return (
+                        <button onClick={() => open()} className="bg-red-400" >
+                            Upload an Image
+                        </button>
+                        );
+                    }}
+                    </CldUploadWidget>
 
                         {/* Etapa 2 */}
                         {step === 2 && (
                             <>
 
-
-
-
+                        
                                 <div>
                                     <label className="block text-lg font-semibold">Nome do Achador</label>
                                     <Controller
@@ -415,20 +471,23 @@ const navigateToStep = async (targetStep: number) => {
                                 </div>
                                 <div>
     <label className="block text-lg font-semibold my-3">Foto do Documento</label>
+
+ 
+       
     <Controller
         name="Foto"
         control={control}
         render={({ field }) => (
             <div>
+               
                 {!formData.Foto ? (
+
+
+                   
+
                     /* Área de upload inicial */
                     <div className="relative w-full p-6 border border-gray-300 rounded-2xl  text-center hover:bg-gray-300  duration-500 cursor-pointer transition-all ">
-                        <input
-                            type="file"
-                            accept="image/*"
-                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                            onChange={handleImageChange} 
-                        />
+                          
                         <div className="flex flex-col items-center">
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -452,7 +511,7 @@ const navigateToStep = async (targetStep: number) => {
                 ) : (
                     <div className="relative w-full h-60 rounded-2xl overflow-hidden transition-all bg-black dark:bg-gray-900 duration-500">
                         <img
-                            src={previewFoto || ""}
+                            src={formData.Foto || ''}
                             alt="Pré-visualização do documento"
                             className="w-full h-full bg-cover object-contain"
                         />
@@ -473,7 +532,7 @@ const navigateToStep = async (targetStep: number) => {
 
                 {formData.Foto && (
                     <p className="text-sm text-green-600 mt-2">
-                        Arquivo selecionado: {formData.Foto}
+                        Arquivo selecionado: {previewFoto ? URL.createObjectURL(previewFoto) : ""}
                     </p>
                 )}
 
@@ -511,7 +570,7 @@ const navigateToStep = async (targetStep: number) => {
 
             <p>
                 <strong>Nome do Achador:</strong> {formData.nome || "Não Confirmados"}
-            </p>
+                </p>  
             <p>
                 <strong>Contacto:</strong> {formData.contacto || "Não Confirmados"}
             </p>
@@ -520,12 +579,12 @@ const navigateToStep = async (targetStep: number) => {
             <p>
                 <strong>Localização:</strong> {formData.localizacao || "Não Confirmados"}
             </p>
-            {formData.Foto && (
+            {previewFoto && (
                  <div className="relative w-full h-48  overflow-hidden transition-all duration-500 col-span-1 lg:col-span-2 ">
                 <strong>Foto do Documento:</strong>
 
                  <img
-                     src={previewFoto || ""}
+                     src={previewFoto ? URL.createObjectURL(previewFoto) : ""}
                      alt="Pré-visualização do documento"
                      className="w-full h-full bg-cover mt-1 object-contain"
                  />

@@ -21,10 +21,24 @@ export async function POST(request:Request){
 
     try{
 
+        
         const {nome,nomeDocumento,codigoDocumento,Foto,localizacao,contacto,tipoDocumento,status} = body;
+        console.log("Dados que chegaram.......",body)
+       
 
-        const newDocumentoEn = await createDocumentoEncontrado(nomeDocumento,nome,codigoDocumento,Foto,tipoDocumento,localizacao,contacto,status);
+        // Passar os dados para o serviço
+        const newDocumentoEn = await createDocumentoEncontrado(
+            nomeDocumento,
+            nome,
+            codigoDocumento,
+            Foto,
+            tipoDocumento,
+            localizacao,
+            contacto,
+            status
+        );
 
+        // Responder com os dados do novo documento
         return NextResponse.json(newDocumentoEn);
 
 

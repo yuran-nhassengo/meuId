@@ -1,3 +1,5 @@
+import { uploadImageToCloudinary } from "@/app/lib/uploadImage";
+import { DocumentosEncontrados } from "@/types/usuario";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
@@ -8,7 +10,7 @@ export interface documentosEn {
     nomeDocumento: string, // nome do proprietário do documento
     nome: string, // nome de quem encontrou o documento
     codigoDocumento: string, // número do documento encontrado
-    Foto: string, // foto do documento
+    Foto: File | null, // foto do documento
     tipoDocumento: string, // tipo do documento
     localizacao: string, // local em que o documento foi encontrado
     contacto: string, // contato da pessoa que encontrou o documento
@@ -26,14 +28,18 @@ export const createDocumentoEncontrado = async (
     localizacao: string,
     contacto: string,
     status: string
-) => {
+): Promise<DocumentosEncontrados> => {
+
+    try {
+
+       
 
     const documento = await prisma.documentosEncontrados.create({
         data: {
             nomeDocumento,
             nome,
             codigoDocumento,
-            linkImagem: Foto,
+            linkImagem:Foto,
             tipoDocumento,
             localizacao,
             contacto,
@@ -42,6 +48,11 @@ export const createDocumentoEncontrado = async (
     });
 
     return documento;
+
+    } catch (error) {
+        console.error("Erro ao criar documento:", error);
+        throw new Error("Erro ao criar documento encontrado");
+    }
 };
 
 // Função para obter todos os documentos encontrados

@@ -5,10 +5,9 @@ export interface DocumentosEncontrados {
     tipoDocumento: string; // Tipo do documento
     contacto: string; // Número de contato relacionado
     linkImagem: string; // Link para a imagem associada ao documento
-    descricao: string; // Descrição do documento encontrado
     localizacao: string; // Localização onde o documento foi encontrado
-    usuarioId: string; // ID do usuário que registrou o documento encontrado
-    usuario?: Usuario; // Relacionamento com o usuário que registrou o documento
+    usuarioId: string | null; // ID do usuário que registrou o documento encontrado
+    usuario?: Usuario | null; // Relacionamento com o usuário que registrou o documento
   }
   
   // Interface para Documentos Perdidos
@@ -17,10 +16,9 @@ export interface DocumentosEncontrados {
     nome: string; // Nome da pessoa ou item relacionado ao documento perdido
     tipoDocumento: string; // Tipo do documento
     contacto: string; // Número de contato relacionado
-    descricao: string; // Descrição do documento perdido
     localizacao: string; // Localização onde o documento foi perdido
-    usuarioId: string; // ID do usuário que registrou o documento perdido
-    usuario?: Usuario; // Relacionamento com o usuário que registrou o documento
+    usuarioId: string | null; // ID do usuário que registrou o documento perdido
+    usuario?: Usuario | null; // Relacionamento com o usuário que registrou o documento
   }
   
   // Interface para o Usuário
