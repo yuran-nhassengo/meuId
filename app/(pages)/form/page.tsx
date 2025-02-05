@@ -1,6 +1,6 @@
 "use client"
 import React, { useState ,  useRef, useEffect} from "react";
-import { Header } from "@/components/Header";
+import { Header } from "@/components/Header/Header";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";

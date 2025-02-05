@@ -56,7 +56,7 @@ const NotificationPanel: React.FC = () => {
   };
 
   return (
-    <div className="relative flex">
+    <div className="relative hidden sm:flex">
       {/* Botão de sino */}
       <button
         className="p-2 sm:p-2 md:p-4 rounded-full bg-gray-200 dark:bg-gray-800 relative z-0 transition-all duration-200"
